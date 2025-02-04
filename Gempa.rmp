@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="10.3.000">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="10.3.000" expanded="true" name="Process" origin="EXPORTED_TURBOPREP">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="retrieve" compatibility="10.3.000" expanded="true" height="68" name="Retrieve" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+        <parameter key="repository_entry" value="//Local Repository/data/Gempa"/>
+        <description align="center" color="transparent" colored="false" width="126">Loading Gempa</description>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="10.3.000" expanded="true" height="82" name="Subprocess" origin="EXPORTED_TURBOPREP" width="90" x="179" y="34">
+        <process expanded="true">
+          <operator activated="true" class="nominal_to_text" compatibility="10.3.000" expanded="true" height="82" name="Nominal to Text" origin="EXPORTED_TURBOPREP" width="90" x="45" y="34">
+            <parameter key="attribute_filter_type" value="value_type"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="nominal"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="file_path"/>
+            <parameter key="block_type" value="single_value"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="single_value"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <description align="center" color="transparent" colored="false" width="126">Change all categorical columns to text</description>
+          </operator>
+          <operator activated="true" class="text_to_nominal" compatibility="10.3.000" expanded="true" height="82" name="Text to Nominal" origin="EXPORTED_TURBOPREP" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="value_type"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="text"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="text"/>
+            <parameter key="block_type" value="value_matrix"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <description align="center" color="transparent" colored="false" width="126">Change all text columns to nominal</description>
+          </operator>
+          <operator activated="true" class="numerical_to_real" compatibility="10.3.000" expanded="true" height="82" name="Numerical to Real" origin="EXPORTED_TURBOPREP" width="90" x="313" y="34">
+            <parameter key="attribute_filter_type" value="value_type"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="numeric"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="real"/>
+            <parameter key="block_type" value="value_series"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_series_end"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <description align="center" color="transparent" colored="false" width="126">Change all numerical columns to real</description>
+          </operator>
+          <connect from_port="in 1" to_op="Nominal to Text" to_port="example set input"/>
+          <connect from_op="Nominal to Text" from_port="example set output" to_op="Text to Nominal" to_port="example set input"/>
+          <connect from_op="Text to Nominal" from_port="example set output" to_op="Numerical to Real" to_port="example set input"/>
+          <connect from_op="Numerical to Real" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+        <description align="center" color="transparent" colored="false" width="126">Unify column types</description>
+      </operator>
+      <operator activated="true" class="select_attributes" compatibility="10.3.000" expanded="true" height="82" name="Select Attributes" origin="EXPORTED_TURBOPREP" width="90" x="313" y="34">
+        <parameter key="attribute_filter_type" value="regular_expression"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value=""/>
+        <parameter key="regular_expression" value="\QNo\E"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="true"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <description align="center" color="transparent" colored="false" width="126">Remove No</description>
+      </operator>
+      <operator activated="true" class="select_attributes" compatibility="10.3.000" expanded="true" height="82" name="Select Attributes (2)" origin="EXPORTED_TURBOPREP" width="90" x="447" y="34">
+        <parameter key="attribute_filter_type" value="regular_expression"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value=""/>
+        <parameter key="regular_expression" value="\QEvent ID\E"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="true"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <description align="center" color="transparent" colored="false" width="126">Remove Event ID</description>
+      </operator>
+      <operator activated="true" class="select_attributes" compatibility="10.3.000" expanded="true" height="82" name="Select Attributes (3)" origin="EXPORTED_TURBOPREP" width="90" x="581" y="34">
+        <parameter key="attribute_filter_type" value="regular_expression"/>
+        <parameter key="attribute" value=""/>
+        <parameter key="attributes" value=""/>
+        <parameter key="regular_expression" value="\QAgency\E"/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="true"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <description align="center" color="transparent" colored="false" width="126">Remove Agency</description>
+      </operator>
+      <operator activated="true" class="order_attributes" compatibility="10.3.000" expanded="true" height="82" name="Reorder Attributes" origin="EXPORTED_TURBOPREP" width="90" x="715" y="34">
+        <parameter key="sort_mode" value="user specified"/>
+        <parameter key="attribute_ordering" value="Date time|Latitude|Longitude|Magnitude|Mag Type|Depth (km)|Phase Count|Azimuth Gap|Location"/>
+        <parameter key="use_regular_expressions" value="false"/>
+        <parameter key="handle_unmatched" value="append"/>
+        <parameter key="sort_direction" value="ascending"/>
+        <description align="center" color="transparent" colored="false" width="126">Ensure order of columns matches the table view.</description>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="10.3.000" expanded="true" height="82" name="Turbo Prep Process" width="90" x="922" y="34">
+        <process expanded="true">
+          <operator activated="true" class="subprocess" compatibility="10.3.000" expanded="true" height="82" name="Subprocess (2)" width="90" x="45" y="34">
+            <process expanded="true">
+              <operator activated="true" class="nominal_to_text" compatibility="10.3.000" expanded="true" height="82" name="Nominal to Text (2)" width="90" x="45" y="34">
+                <parameter key="attribute_filter_type" value="value_type"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="nominal"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="file_path"/>
+                <parameter key="block_type" value="single_value"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="single_value"/>
+                <parameter key="invert_selection" value="false"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Change all categorical columns to text</description>
+              </operator>
+              <operator activated="true" class="text_to_nominal" compatibility="10.3.000" expanded="true" height="82" name="Text to Nominal (2)" width="90" x="179" y="34">
+                <parameter key="attribute_filter_type" value="value_type"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="text"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="text"/>
+                <parameter key="block_type" value="value_matrix"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_matrix_row_start"/>
+                <parameter key="invert_selection" value="false"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Change all text columns to nominal</description>
+              </operator>
+              <operator activated="true" class="numerical_to_real" compatibility="10.3.000" expanded="true" height="82" name="Numerical to Real (2)" width="90" x="313" y="34">
+                <parameter key="attribute_filter_type" value="value_type"/>
+                <parameter key="attribute" value=""/>
+                <parameter key="attributes" value=""/>
+                <parameter key="use_except_expression" value="false"/>
+                <parameter key="value_type" value="numeric"/>
+                <parameter key="use_value_type_exception" value="false"/>
+                <parameter key="except_value_type" value="real"/>
+                <parameter key="block_type" value="value_series"/>
+                <parameter key="use_block_type_exception" value="false"/>
+                <parameter key="except_block_type" value="value_series_end"/>
+                <parameter key="invert_selection" value="false"/>
+                <parameter key="include_special_attributes" value="false"/>
+                <description align="center" color="transparent" colored="false" width="126">Change all numerical columns to real</description>
+              </operator>
+              <connect from_port="in 1" to_op="Nominal to Text (2)" to_port="example set input"/>
+              <connect from_op="Nominal to Text (2)" from_port="example set output" to_op="Text to Nominal (2)" to_port="example set input"/>
+              <connect from_op="Text to Nominal (2)" from_port="example set output" to_op="Numerical to Real (2)" to_port="example set input"/>
+              <connect from_op="Numerical to Real (2)" from_port="example set output" to_port="out 1"/>
+              <portSpacing port="source_in 1" spacing="0"/>
+              <portSpacing port="source_in 2" spacing="0"/>
+              <portSpacing port="sink_out 1" spacing="0"/>
+              <portSpacing port="sink_out 2" spacing="0"/>
+            </process>
+            <description align="center" color="transparent" colored="false" width="126">Unify column types</description>
+          </operator>
+          <operator activated="true" class="select_attributes" compatibility="10.3.000" expanded="true" height="82" name="Select Attributes (4)" origin="GENERATED_TURBOPREP" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QDate time\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="true"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <description align="center" color="transparent" colored="false" width="126">Remove Date time</description>
+          </operator>
+          <operator activated="true" class="nominal_to_numerical" compatibility="10.3.000" expanded="true" height="103" name="Nominal to Numerical" origin="GENERATED_TURBOPREP" width="90" x="313" y="34">
+            <parameter key="return_preprocessing_model" value="false"/>
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QMag Type\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="nominal"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="file_path"/>
+            <parameter key="block_type" value="single_value"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="single_value"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <parameter key="coding_type" value="dummy coding"/>
+            <parameter key="use_comparison_groups" value="false"/>
+            <list key="comparison_groups"/>
+            <parameter key="unexpected_value_handling" value="all 0 and warning"/>
+            <parameter key="use_underscore_in_name" value="false"/>
+            <description align="center" color="transparent" colored="false" width="126">Apply dummy encoding to the columns Mag Type</description>
+          </operator>
+          <operator activated="true" class="replace" compatibility="10.3.000" expanded="true" height="82" name="Replace" origin="GENERATED_TURBOPREP" width="90" x="629" y="34">
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QLocation\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="nominal"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="file_path"/>
+            <parameter key="block_type" value="single_value"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="single_value"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <parameter key="replace_what" value="Minahassa Peninsula, Sulawesi"/>
+            <parameter key="replace_by" value="Sulawesi"/>
+            <description align="center" color="transparent" colored="false" width="126">Replace 'Minahassa Peninsula, Sulawesi' by 'Sulawesi' in Location</description>
+          </operator>
+          <operator activated="true" class="replace" compatibility="10.3.000" expanded="true" height="82" name="Replace (2)" origin="GENERATED_TURBOPREP" width="90" x="861" y="34">
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QLocation\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="nominal"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="file_path"/>
+            <parameter key="block_type" value="single_value"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="single_value"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <parameter key="replace_what" value="Sulawesi, Indonesia"/>
+            <parameter key="replace_by" value="Sulawesi"/>
+            <description align="center" color="transparent" colored="false" width="126">Replace 'Sulawesi, Indonesia' by 'Sulawesi' in Location</description>
+          </operator>
+          <operator activated="true" class="replace" compatibility="10.3.000" expanded="true" height="82" name="Replace (3)" origin="GENERATED_TURBOPREP" width="90" x="995" y="34">
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QLocation\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="nominal"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="file_path"/>
+            <parameter key="block_type" value="single_value"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="single_value"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <parameter key="replace_what" value="Talaud Islands, Indonesia"/>
+            <parameter key="replace_by" value="Sulawesi"/>
+            <description align="center" color="transparent" colored="false" width="126">Replace 'Talaud Islands, Indonesia' by 'Sulawesi' in Location</description>
+          </operator>
+          <operator activated="true" class="replace" compatibility="10.3.000" expanded="true" height="82" name="Replace (4)" origin="GENERATED_TURBOPREP" width="90" x="1129" y="34">
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QLocation\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="nominal"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="file_path"/>
+            <parameter key="block_type" value="single_value"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="single_value"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <parameter key="replace_what" value="Southern Molucca Sea"/>
+            <parameter key="replace_by" value="Molucca Sea"/>
+            <description align="center" color="transparent" colored="false" width="126">Replace 'Southern Molucca Sea' by 'Molucca Sea' in Location</description>
+          </operator>
+          <operator activated="true" class="replace" compatibility="10.3.000" expanded="true" height="82" name="Replace (5)" origin="GENERATED_TURBOPREP" width="90" x="1263" y="34">
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QLocation\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="nominal"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="file_path"/>
+            <parameter key="block_type" value="single_value"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="single_value"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <parameter key="replace_what" value="Northern Molucca Sea"/>
+            <parameter key="replace_by" value="Molucca Sea"/>
+            <description align="center" color="transparent" colored="false" width="126">Replace 'Northern Molucca Sea' by 'Molucca Sea' in Location</description>
+          </operator>
+          <operator activated="true" class="nominal_to_numerical" compatibility="10.3.000" expanded="true" height="103" name="Nominal to Numerical (2)" origin="GENERATED_TURBOPREP" width="90" x="1817" y="34">
+            <parameter key="return_preprocessing_model" value="false"/>
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QLocation\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="nominal"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="file_path"/>
+            <parameter key="block_type" value="single_value"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="single_value"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <parameter key="coding_type" value="dummy coding"/>
+            <parameter key="use_comparison_groups" value="false"/>
+            <list key="comparison_groups"/>
+            <parameter key="unexpected_value_handling" value="all 0 and warning"/>
+            <parameter key="use_underscore_in_name" value="false"/>
+            <description align="center" color="transparent" colored="false" width="126">Apply dummy encoding to the columns Location</description>
+          </operator>
+          <operator activated="true" class="normalize" compatibility="10.3.000" expanded="true" height="103" name="Normalize" origin="GENERATED_TURBOPREP" width="90" x="1951" y="34">
+            <parameter key="return_preprocessing_model" value="false"/>
+            <parameter key="attribute_filter_type" value="regular_expression"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value=""/>
+            <parameter key="regular_expression" value="\QLatitude\E|\QLatitude\E|\QLongitude\E|\QMagnitude\E|\QMag Type = MLv\E|\QMag Type = M\E|\QMag Type = mb\E|\QMag Type = Mw\E|\QMag Type = Mw(mB)\E|\QMag Type = ML\E|\QDepth (km)\E|\QPhase Count\E|\QAzimuth Gap\E|\QLocation = Sulawesi\E|\QLocation = Molucca Sea\E|\QLocation = Flores Sea\E|\QLocation = Celebes Sea\E|\QLocation = Ceram Sea\E|\QLocation = Banda Sea\E|\QLocation = Borneo\E|\QLocation = Bali Sea\E"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="numeric"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="real"/>
+            <parameter key="block_type" value="value_series"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_series_end"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+            <parameter key="method" value="range transformation"/>
+            <parameter key="min" value="0.0"/>
+            <parameter key="max" value="1.0"/>
+            <parameter key="allow_negative_values" value="false"/>
+            <description align="center" color="transparent" colored="false" width="126">Normalize (define range) the columns Latitude, Latitude, Longitude, Magnitude, Mag Type = MLv [16 more]</description>
+          </operator>
+          <operator activated="true" class="order_attributes" compatibility="10.3.000" expanded="true" height="82" name="Reorder Attributes (2)" width="90" x="2085" y="34">
+            <parameter key="sort_mode" value="user specified"/>
+            <parameter key="attribute_ordering" value="Latitude|Longitude|Magnitude|Mag Type = MLv|Mag Type = M|Mag Type = mb|Mag Type = Mw|Mag Type = Mw(mB)|Mag Type = ML|Depth (km)|Phase Count|Azimuth Gap|Location = Sulawesi|Location = Molucca Sea|Location = Flores Sea|Location = Celebes Sea|Location = Ceram Sea|Location = Banda Sea|Location = Borneo|Location = Bali Sea"/>
+            <parameter key="use_regular_expressions" value="false"/>
+            <parameter key="handle_unmatched" value="append"/>
+            <parameter key="sort_direction" value="ascending"/>
+            <description align="center" color="transparent" colored="false" width="126">Ensure order of columns matches the table view.</description>
+          </operator>
+          <connect from_port="in 1" to_op="Subprocess (2)" to_port="in 1"/>
+          <connect from_op="Subprocess (2)" from_port="out 1" to_op="Select Attributes (4)" to_port="example set input"/>
+          <connect from_op="Select Attributes (4)" from_port="example set output" to_op="Nominal to Numerical" to_port="example set input"/>
+          <connect from_op="Nominal to Numerical" from_port="example set output" to_op="Replace" to_port="example set input"/>
+          <connect from_op="Replace" from_port="example set output" to_op="Replace (2)" to_port="example set input"/>
+          <connect from_op="Replace (2)" from_port="example set output" to_op="Replace (3)" to_port="example set input"/>
+          <connect from_op="Replace (3)" from_port="example set output" to_op="Replace (4)" to_port="example set input"/>
+          <connect from_op="Replace (4)" from_port="example set output" to_op="Replace (5)" to_port="example set input"/>
+          <connect from_op="Replace (5)" from_port="example set output" to_op="Nominal to Numerical (2)" to_port="example set input"/>
+          <connect from_op="Nominal to Numerical (2)" from_port="example set output" to_op="Normalize" to_port="example set input"/>
+          <connect from_op="Normalize" from_port="example set output" to_op="Reorder Attributes (2)" to_port="example set input"/>
+          <connect from_op="Reorder Attributes (2)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+        <description align="center" color="transparent" colored="false" width="126">TP Operations: Remove, Dummy Encoding, Replace, Replace, Replace, Replace, Replace, Dummy Encoding, Normalization</description>
+      </operator>
+      <connect from_op="Retrieve" from_port="output" to_op="Subprocess" to_port="in 1"/>
+      <connect from_op="Subprocess" from_port="out 1" to_op="Select Attributes" to_port="example set input"/>
+      <connect from_op="Select Attributes" from_port="example set output" to_op="Select Attributes (2)" to_port="example set input"/>
+      <connect from_op="Select Attributes (2)" from_port="example set output" to_op="Select Attributes (3)" to_port="example set input"/>
+      <connect from_op="Select Attributes (3)" from_port="example set output" to_op="Reorder Attributes" to_port="example set input"/>
+      <connect from_op="Reorder Attributes" from_port="example set output" to_op="Turbo Prep Process" to_port="in 1"/>
+      <connect from_op="Turbo Prep Process" from_port="out 1" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+    </process>
+  </operator>
+</process>
